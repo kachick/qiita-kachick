@@ -56,7 +56,7 @@ module Qiita
     end
 
     def _connect
-      Faraday.new(options) {|faraday|
+      Faraday.new(FARADAY_OPTIONS) {|faraday|
         faraday.request :json
         faraday.adapter Faraday.default_adapter
         faraday.use Faraday::Response::RaiseQiitaError
