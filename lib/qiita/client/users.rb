@@ -2,14 +2,12 @@ module Qiita; class Client
   
   module Users
 
-    def user_items(url_name=nil, params={})
-      path = url_name ? "/users/#{url_name}/items" : '/items'
-      get path, params
+    def user_items(url_name=nil)
+      get url_name ? "/users/#{url_name}/items" : '/items'
     end
 
-    def user_stocks(url_name=nil, params={})
-      path = url_name ? "/users/#{url_name}/stocks" : '/stocks'
-      get path, params
+    def user_stocks(url_name=nil)
+      get url_name ? "/users/#{url_name}/stocks" : '/stocks'
     end
 
     def user(url_name)

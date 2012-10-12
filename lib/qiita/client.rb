@@ -75,7 +75,7 @@ module Qiita
 
     # @return [JSON]
     def _login
-      post '/auth', api_name: @api_name, password: @password
+      post '/auth', params_for_login
     end
 
     def connection
@@ -92,14 +92,20 @@ module Qiita
       }
     end
 
-    %w(get delete post put).each do |http_action|
-      define_method http_action do |_path, params={}|
-        if with_token?
-          params = params.merge token: token 
-        end
+    def params_for_login
+      {api_name: @api_name, password: @password}
+    end
 
-        path = "/api/v1/#{_path}"
-        raise
+    def params_for_faraday
+      params_for_login.tap {|base|
+        base.update token: token if with_token?
+      }
+    end
+
+    %w(get delete post put).each do |http_action|
+      define_method http_action do |path, params={}|
+        path = "/api/v1/#{path}"
+        params = params_for_faraday.merge params
         response = connection.__send__(http_action) do |req|
           req.headers['Content-Type'] = 'application/json'
           case http_action
@@ -107,10 +113,7 @@ module Qiita
             req.url path, params
           when :post, :put
             req.path = path
-
-            unless params.empty?
-              req.body = params.to_json 
-            end
+            req.body = params.to_json unless params.empty?
           end
         end
 
