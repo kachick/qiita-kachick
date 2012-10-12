@@ -1,11 +1,10 @@
-# -*- encoding: utf-8 -*-
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'qiita/version'
 
 Gem::Specification.new do |gem|
   gem.name          = "qiita"
-  gem.version       = Qiita::VERSION
+  gem.version       = Qiita::VERSION.dup
   gem.authors       = ["Hiroshige Umino"]
   gem.email         = ["yaotti@qiita.com"]
   gem.description   = <<desc
@@ -19,6 +18,8 @@ desc
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
+
+  gem.required_ruby_version = '>= 1.9.2'
 
   gem.add_dependency 'faraday', '~> 0.8'
   gem.add_dependency 'faraday_middleware', '~> 0.8'

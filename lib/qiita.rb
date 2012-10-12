@@ -1,5 +1,5 @@
-require "qiita/client"
-require "qiita/version"
+require_relative 'qiita/client'
+require_relative 'qiita/version'
 
 module Qiita
   class << self

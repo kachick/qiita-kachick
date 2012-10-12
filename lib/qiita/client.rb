@@ -1,12 +1,11 @@
 require 'faraday'
 require 'faraday_middleware'
-require 'faraday/response/raise_qiita_error.rb'
+require_relative '../faraday/response/raise_qiita_error'
 require 'json'
-require 'qiita'
-require 'qiita/error'
-require 'qiita/client/items'
-require 'qiita/client/tags'
-require 'qiita/client/users'
+require_relative 'error'
+require_relative 'client/items'
+require_relative 'client/tags'
+require_relative 'client/users'
 
 module Qiita
   class Client
