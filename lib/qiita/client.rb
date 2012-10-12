@@ -74,6 +74,15 @@ module Qiita
       http.get "/items/#{uuid}"
     end
 
+    def foreach(shallow_items)
+      return to_enum(__callee__, shallow_items) unless block_given?
+
+      shallow_items.each do |shallow|
+        yield item(shallow.uuid)
+      end
+      self
+    end
+
     SearcherOption = OptionalArgument.define {
       opt :q, must: true, aliases: [:query], condition: String
       opt :stocked, default: false, condition: BOOLEAN?

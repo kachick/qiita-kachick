@@ -1,3 +1,5 @@
+# Supporting v1 API
+# @see http://qiita.com/docs
 module Qiita
 
   ROOT_URL = 'https://qiita.com/'.freeze

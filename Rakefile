@@ -1,5 +1,10 @@
-require "bundler/gem_tasks"
-require "rspec/core/rake_task"
+#!/usr/bin/env rake
+require 'bundler/gem_tasks'
 
-RSpec::Core::RakeTask.new("spec")
-task :default => :spec
+require 'rake/testtask'
+
+task default: [:test]
+
+Rake::TestTask.new do |tt|
+  tt.verbose = true
+end
