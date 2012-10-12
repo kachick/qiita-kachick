@@ -28,7 +28,7 @@ module Qiita
     include Users
 
     ConstructorOption = OptionalArgument.define {
-      opt :api_name, condition: AND(String, /./), aliases: [:name, :url_name]
+      opt :url_name, condition: AND(String, /./), aliases: [:name]
       opt :password, condition: AND(String, /./)
       opt :token, condition: AND(String, /\A\w{20,}\z/)
       opt :json, condition: JSON
@@ -38,15 +38,15 @@ module Qiita
     def initialize(options={})
       opts = ConstructorOption.parse options
 
-      @api_name = opts.api_name
+      @url_name = opts.url_name
       @password = opts.password
       @token = opts.token
       @json = opts.json
       @connection = opts.connection
     end
 
-    def api_name
-      @api_name && @api_name.dup
+    def url_name
+      @url_name && @url_name.dup
     end
 
     def rate_limit(params={})
@@ -93,18 +93,20 @@ module Qiita
     end
 
     def params_for_login
-      {api_name: @api_name, password: @password}
+      {url_name: @url_name, password: @password}
     end
 
     def params_for_faraday
       params_for_login.tap {|base|
-        base.update token: token if with_token?
+        if with_token? && !base.key?(:token)
+          base.update token: token 
+        end
       }
     end
 
-    %w(get delete post put).each do |http_action|
+    [:get, :delete, :post, :put].each do |http_action|
       define_method http_action do |path, params={}|
-        path = "/api/v1/#{path}"
+        path = "/api/v1#{path}"
         params = params_for_faraday.merge params
         response = connection.__send__(http_action) do |req|
           req.headers['Content-Type'] = 'application/json'
