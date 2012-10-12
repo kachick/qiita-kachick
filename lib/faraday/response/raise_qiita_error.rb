@@ -1,7 +1,9 @@
 require 'faraday'
 
 module Faraday
+
   class Response::RaiseQiitaError < Response::Middleware
+
     def on_complete(response)
       case response[:status]
       when 400
@@ -24,9 +26,14 @@ module Faraday
     end
 
     def error_message(response)
-      message = response[:body]['error']
-      return message unless message.empty?
+      body = response[:body]
+      return unless body
+      message = body['error']
+      return unless message.empty?
+      
       "#{response[:method].to_s.upcase} #{response[:url].to_s}: #{response[:status]}"
     end
+
   end
+
 end

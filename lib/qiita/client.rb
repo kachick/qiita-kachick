@@ -2,6 +2,7 @@ require 'faraday'
 require 'faraday_middleware'
 require_relative '../faraday/response/raise_qiita_error'
 require 'json'
+require 'optionalargument'
 require_relative 'error'
 require_relative 'client/items'
 require_relative 'client/tags'
@@ -11,7 +12,6 @@ module Qiita
 
   class Client
 
-    ROOT_URL = 'https://qiita.com/'.freeze
     FARADAY_OPTIONS =  {
       url: ROOT_URL,
       ssl: { 
@@ -19,36 +19,63 @@ module Qiita
       }.freeze
     }.freeze
 
-    CONSTRUCT_KEYS = [:url_name, :password, :token].freeze
+    if respond_to? :private_constant
+      private_constant :FARADAY_OPTIONS
+    end
 
     include Items
     include Tags
     include Users
 
-    attr_accessor(*CONSTRUCT_KEYS)
+    ConstructorOption = OptionalArgument.define {
+      opt :api_name, condition: AND(String, /./), aliases: [:name, :url_name]
+      opt :password, condition: AND(String, /./)
+      opt :token, condition: AND(String, /\A\w{20,}\z/)
+      opt :json, condition: JSON
+      opt :connection, condition: Faraday
+    }
 
-    def initialize(args)
-      CONSTRUCT_KEYS.each do |key|
-        __send__(:"#{key}=", args[key])
-      end
+    def initialize(options={})
+      opts = ConstructorOption.parse options
 
-      if token.nil? && url_name && password
-        login
-      end
+      @api_name = opts.api_name
+      @password = opts.password
+      @token = opts.token
+      @json = opts.json
+      @connection = opts.connection
+    end
+
+    def api_name
+      @api_name && @api_name.dup
     end
 
     def rate_limit(params={})
       get '/rate_limit', params
     end
 
-    private
-
-    def login
-      @token = json['token']
+    def token
+      @token ||= json['token']
     end
 
     def json
-      post '/auth', url_name: @url_name, password: @password
+      @json ||= _login
+    end
+
+    def login
+      raise 'already logined' if @json
+
+      _login
+    end
+
+    def with_token?
+      !!@token
+    end
+
+    private
+
+    # @return [JSON]
+    def _login
+      post '/auth', api_name: @api_name, password: @password
     end
 
     def connection
@@ -65,38 +92,30 @@ module Qiita
       }
     end
 
-    def get(path, params={})
-      request :get, path, params
-    end
-
-    def delete(path, params={})
-      request :delete, path, params
-    end
-
-    def post(path, params={})
-      request :post, path, params
-    end
-
-    def put(path, params={})
-      request :put, path, params
-    end
-
-    def request(method, path, params)
-      path = "/api/v1/#{path}"
-      params.merge!(:token => token) if token
-
-      response = connection.__send__(method) do |req|
-        req.headers['Content-Type'] = 'application/json'
-        case method
-        when :get, :delete
-          req.url path, params
-        when :post, :put
-          req.path = path
-          req.body = params.to_json unless params.empty?
+    %w(get delete post put).each do |http_action|
+      define_method http_action do |_path, params={}|
+        if with_token?
+          params = params.merge token: token 
         end
-      end
 
-      response.body
+        path = "/api/v1/#{_path}"
+        raise
+        response = connection.__send__(http_action) do |req|
+          req.headers['Content-Type'] = 'application/json'
+          case http_action
+          when :get, :delete
+            req.url path, params
+          when :post, :put
+            req.path = path
+
+            unless params.empty?
+              req.body = params.to_json 
+            end
+          end
+        end
+
+        response.body
+      end
     end
 
   end
