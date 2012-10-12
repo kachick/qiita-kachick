@@ -1,6 +1,7 @@
-module Qiita
-  class Client
+module Qiita; class Client
+  
     module Items
+
       def post_item(params)
         post '/items', params
       end
@@ -28,6 +29,7 @@ module Qiita
       def unstock_item(uuid)
         delete "/items/#{uuid}/stock"
       end
+  
     end
-  end
-end
+
+end; end

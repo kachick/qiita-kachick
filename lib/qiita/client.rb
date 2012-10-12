@@ -8,33 +8,36 @@ require_relative 'client/tags'
 require_relative 'client/users'
 
 module Qiita
+
   class Client
-    ROOT_URL = 'https://qiita.com/'
+
+    ROOT_URL = 'https://qiita.com/'.freeze
     OPTIONS_KEYS = [:url_name, :password, :token].freeze
 
-    attr_accessor *OPTIONS_KEYS
+    include Items
+    include Tags
+    include Users
+
+    attr_accessor(*OPTIONS_KEYS)
 
     def initialize(args)
       OPTIONS_KEYS.each do |key|
-        send("#{key}=", args[key])
+        __send__(:"#{key}=", args[key])
       end
+
       if token.nil? && url_name && password
         login
       end
     end
 
-    def rate_limit params={}
+    def rate_limit(params={})
       get '/rate_limit', params
     end
-
-    include Qiita::Client::Items
-    include Qiita::Client::Tags
-    include Qiita::Client::Users
 
     private
 
     def login
-      json = post '/auth', { :url_name => @url_name, :password => @password }
+      json = post '/auth', url_name: @url_name, password: @password
       @token = json['token']
     end
 
@@ -43,6 +46,7 @@ module Qiita
         :url => ROOT_URL,
         :ssl => { :verify => false }
       }
+
       @connection ||= Faraday.new(options) do |faraday|
         faraday.request :json
         faraday.adapter Faraday.default_adapter
@@ -71,6 +75,7 @@ module Qiita
     def request(method, path, params)
       path = "/api/v1/#{path}"
       params.merge!(:token => token) if token
+
       response = connection.send(method) do |req|
         req.headers['Content-Type'] = 'application/json'
         case method
@@ -81,7 +86,10 @@ module Qiita
           req.body = params.to_json unless params.empty?
         end
       end
+
       response.body
     end
+
   end
+
 end
