@@ -26,5 +26,5 @@ desc
   gem.add_dependency 'json', '~> 1.7'
   gem.add_dependency 'optionalargument', '~> 0.0.3'
 
-  gem.add_development_dependency 'rspec'
+  gem.add_development_dependency 'yard', '~> 0.8'
 end

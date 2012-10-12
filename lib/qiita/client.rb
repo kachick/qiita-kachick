@@ -1,38 +1,18 @@
-require 'faraday'
-require 'faraday_middleware'
-require_relative '../faraday/response/raise_qiita_error'
-require 'json'
 require 'optionalargument'
-require_relative 'error'
-require_relative 'client/items'
-require_relative 'client/tags'
-require_relative 'client/users'
+require_relative 'connection'
 
 module Qiita
 
   class Client
 
-    FARADAY_OPTIONS =  {
-      url: ROOT_URL,
-      ssl: { 
-        verify: false
-      }.freeze
-    }.freeze
-
-    if respond_to? :private_constant
-      private_constant :FARADAY_OPTIONS
-    end
-
-    include Items
-    include Tags
-    include Users
-
     ConstructorOption = OptionalArgument.define {
       opt :url_name, condition: AND(String, /./), aliases: [:name]
       opt :password, condition: AND(String, /./)
-      opt :token, condition: AND(String, /\A\w{20,}\z/)
-      opt :json, condition: JSON
-      opt :connection, condition: Faraday
+    }
+
+    AuthenticateOption = OptionalArgument.define {
+      opt :url_name, must: true, condition: AND(String, /./), aliases: [:name]
+      opt :password, must: true, condition: AND(String, /./)
     }
 
     def initialize(options={})
@@ -40,88 +20,136 @@ module Qiita
 
       @url_name = opts.url_name
       @password = opts.password
-      @token = opts.token
-      @json = opts.json
-      @connection = opts.connection
+      @token = nil
+      @connection = nil
     end
 
-    def url_name
-      @url_name && @url_name.dup
+    %w(url_name password token).each do |ivar|
+      define_method ivar do
+        val = instance_variable_get :"@#{ivar}"
+        val && val.dup
+      end
+
+      define_method :"with_#{ivar}?" do
+        !!val
+      end
     end
 
-    def rate_limit(params={})
-      get '/rate_limit', params
+    def rate_limit
+      http.get '/rate_limit'
     end
 
-    def token
-      @token ||= json['token']
+    def auth(options)
+      opts = AuthenticateOption.parse options
+      json = http.post('/auth', opts.to_h)
+      @token = json['token']
     end
 
-    def json
-      @json ||= _login
+    alias_method :authenticate, :auth
+    alias_method :login, :auth
+
+    # @todo validate params
+    def post_item(params)
+      http.post '/items', params
     end
 
-    def login
-      raise 'already logined' if @json
+    alias_method :post, :post_item
 
-      _login
+    # @todo validate params
+    def update_item(uuid, params)
+      http.put "/items/#{uuid}", params
     end
 
-    def with_token?
-      !!@token
+    alias_method :update, :update_item
+    alias_method :modify, :update_item
+
+    def delete_item(uuid)
+      http.delete "/items/#{uuid}"
     end
+
+    alias_method :delete, :delete_item
+
+    # more deep than other getters 
+    def item(uuid)
+      http.get "/items/#{uuid}"
+    end
+
+    SearcherOption = OptionalArgument.define {
+      opt :q, must: true, aliases: [:query], condition: String
+      opt :stocked, default: false, condition: BOOLEAN?
+    }
+
+    def search_items(params)
+      http.get "/search", SearcherOption.parse(params).to_h
+    end
+
+    alias_method :select, :search_items
+    alias_method :find_all, :select
+
+    def stock_item(uuid)
+      http.put "/items/#{uuid}/stock"
+    end
+
+    alias_method :stock, :stock_item
+
+    def unstock_item(uuid)
+      http.delete "/items/#{uuid}/stock"
+    end
+
+    alias_method :unstock, :unstock_item
+
+    # @group Around User
+
+    def user_items(url_name=nil)
+      url_name ? http.get("/users/#{url_name}/items") : my_items
+    end
+
+    alias_method :items_by_user, :user_items
+
+    def my_items
+      http.get '/items'
+    end
+
+    def user_stocks(url_name=nil)
+      url_name ? http.get("/users/#{url_name}/stocks") : my_stocks
+    end
+
+    alias_method :stocks_by_user, :user_stocks
+
+    def my_stocks
+      http.get '/stocks'
+    end
+
+    def user(url_name)
+      http.get "/users/#{url_name}"
+    end
+
+    # @endgroup
+
+    # @group Around Tag
+
+    def tag_items(tag)
+      http.get "/tags/#{tag}/items"
+    end
+
+    alias_method :items_by_tag, :tag_items
+
+    def tags
+      http.get '/tags'
+    end
+
+    # @endgroup
 
     private
 
-    # @return [JSON]
-    def _login
-      post '/auth', params_for_login
-    end
-
     def connection
-      @connection ||= _connect
+      @connection ||= Connection.new
+      @connection.token = @token
+      @connection.open
+      @connection
     end
 
-    def _connect
-      Faraday.new(FARADAY_OPTIONS) {|faraday|
-        faraday.request :json
-        faraday.adapter Faraday.default_adapter
-        faraday.use Faraday::Response::RaiseQiitaError
-        faraday.use FaradayMiddleware::Mashify
-        faraday.use FaradayMiddleware::ParseJson
-      }
-    end
-
-    def params_for_login
-      {url_name: @url_name, password: @password}
-    end
-
-    def params_for_faraday
-      params_for_login.tap {|base|
-        if with_token? && !base.key?(:token)
-          base.update token: token 
-        end
-      }
-    end
-
-    [:get, :delete, :post, :put].each do |http_action|
-      define_method http_action do |path, params={}|
-        path = "/api/v1#{path}"
-        params = params_for_faraday.merge params
-        response = connection.__send__(http_action) do |req|
-          req.headers['Content-Type'] = 'application/json'
-          case http_action
-          when :get, :delete
-            req.url path, params
-          when :post, :put
-            req.path = path
-            req.body = params.to_json unless params.empty?
-          end
-        end
-
-        response.body
-      end
-    end
+    alias_method :http, :connection
 
   end
 
