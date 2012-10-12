@@ -12,16 +12,23 @@ module Qiita
   class Client
 
     ROOT_URL = 'https://qiita.com/'.freeze
-    OPTIONS_KEYS = [:url_name, :password, :token].freeze
+    FARADAY_OPTIONS =  {
+      url: ROOT_URL,
+      ssl: { 
+        verify: false
+      }.freeze
+    }.freeze
+
+    CONSTRUCT_KEYS = [:url_name, :password, :token].freeze
 
     include Items
     include Tags
     include Users
 
-    attr_accessor(*OPTIONS_KEYS)
+    attr_accessor(*CONSTRUCT_KEYS)
 
     def initialize(args)
-      OPTIONS_KEYS.each do |key|
+      CONSTRUCT_KEYS.each do |key|
         __send__(:"#{key}=", args[key])
       end
 
@@ -37,46 +44,48 @@ module Qiita
     private
 
     def login
-      json = post '/auth', url_name: @url_name, password: @password
       @token = json['token']
     end
 
-    def connection
-      options = {
-        :url => ROOT_URL,
-        :ssl => { :verify => false }
-      }
+    def json
+      post '/auth', url_name: @url_name, password: @password
+    end
 
-      @connection ||= Faraday.new(options) do |faraday|
+    def connection
+      @connection ||= _connect
+    end
+
+    def _connect
+      Faraday.new(options) {|faraday|
         faraday.request :json
         faraday.adapter Faraday.default_adapter
         faraday.use Faraday::Response::RaiseQiitaError
         faraday.use FaradayMiddleware::Mashify
         faraday.use FaradayMiddleware::ParseJson
-      end
+      }
     end
 
     def get(path, params={})
-      request(:get, path, params)
+      request :get, path, params
     end
 
     def delete(path, params={})
-      request(:delete, path, params)
+      request :delete, path, params
     end
 
     def post(path, params={})
-      request(:post, path, params)
+      request :post, path, params
     end
 
     def put(path, params={})
-      request(:put, path, params)
+      request :put, path, params
     end
 
     def request(method, path, params)
       path = "/api/v1/#{path}"
       params.merge!(:token => token) if token
 
-      response = connection.send(method) do |req|
+      response = connection.__send__(method) do |req|
         req.headers['Content-Type'] = 'application/json'
         case method
         when :get, :delete
