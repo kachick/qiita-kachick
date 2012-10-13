@@ -25,6 +25,7 @@ require 'qiita'
 
 client = Qiita::Client.new
 p client.following_users 'AnyUser'
+p client.following_tags 'AnyUser'
 p client.select(queries: ['ruby', 'qiita', 'API'])
 
 client.auth name: 'Username', password: 'Password'
