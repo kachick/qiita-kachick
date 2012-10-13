@@ -47,7 +47,7 @@ end
 require 'qiita'
 
 Qiita.client name: 'Username', password: 'Password' do
-  select(queries: ['ruby', 'qiita', 'API']) 
+  p select(queries: ['ruby', 'qiita', 'API']) 
   foreach user_items do |article|
     p "title: #{article.title}"
     p "markdown"
