@@ -6,9 +6,7 @@ require_relative '../lib/qiita'
 
 The Qiita::Client.new do |client|
 
-  The client do
-    is_a Qiita::Client
-  end
+  is_a Qiita::Client
 
   The client.token do
     equal nil
@@ -28,8 +26,12 @@ The Qiita::Client.new do |client|
     end
   end
 
-  The client.following_users '_kachick' do
+  The client.following_users '_kachick' do |users|
     is_a Array
+
+    The users.sample do
+      is_a Hashie::Mash
+    end
   end
 
   The client.following_tags '_kachick' do |tags|
