@@ -1,16 +1,16 @@
-require "qiita/client"
-require "qiita/version"
+# qiita - Qiita-API wrapper
 
+# Copyright (c) 2012 Hiroshige Umino
+# Copyright (c) 2012 Kenichi Kamiya
+
+# Supporting v1 API
+# @see http://qiita.com/docs
 module Qiita
-  class << self
-    def new options={}
-      Qiita::Client.new options
-    end
 
-    # Delegate to Qiita::Client.new
-    def method_missing(method, *args, &block)
-      return super unless new.respond_to?(method)
-      new.send(method, *args, &block)
-    end
-  end
+  ROOT_URL = 'https://qiita.com/'.freeze
+
 end
+
+require_relative 'qiita/version'
+require_relative 'qiita/error'
+require_relative 'qiita/client'

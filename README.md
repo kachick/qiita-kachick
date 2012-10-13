@@ -1,70 +1,84 @@
-# Qiita
+qiita
+========
 
-Ruby wrapper for Qiita API v1.
+Description
+-----------
 
-## Installation
+Ruby wrapper for Qiita API
 
-Add this line to your application's Gemfile:
 
-    gem 'qiita'
+Features
+--------
 
-And then execute:
+See [API-v1 doc](http://qiita.com/docs)
 
-    $ bundle
+Usage
+-----
 
-Or install it yourself as:
+### Overview
 
-    $ gem install qiita
+Try this
 
-## Usage
-
-### Get user's items
 ```ruby
-Qiita.user_items 'yaotti'
+# coding: utf-8
+require 'qiita'
+
+client = Qiita::Client.new
+p client.following_users 'AnyUser'
+p client.select(queries: ['ruby', 'qiita', 'API'])
+
+client.auth name: 'Username', password: 'Password'
+p client.token
+p client.rate_limit
+p items = client.user_items
+
+client.foreach items do |article|
+  p "title: #{article.title}"
+  p "markdown"
+  p article.raw_body
+end
 ```
 
-### Get tag's items
-```ruby
-Qiita.tag_items 'ruby'
+### More API
+
+See code :)
+
+Requirements
+-------------
+
+* Ruby - [1.9.2 or later](http://travis-ci.org/#!/kachick/qiita-rb)
+* json
+* faraday
+* faraday_middleware
+* [optionalargument](https://github.com/kachick/optionalargument)
+
+Install
+-------
+
+```bash
+$ gem install qiita-kachick
 ```
 
-### Get a specified item with comments and raw markdown content
-```ruby
-item_uuid = '1234567890abcdefg'
-Qiita.item item_uuid
-```
+Build Status
+-------------
 
+[![Build Status](https://secure.travis-ci.org/kachick/qiita-rb.png)](http://travis-ci.org/kachick/qiita-rb)
 
-## Authenticated requests
+Link
+----
 
-### Login with "username & password" or "token"
-```
-qiita = Qiita.new url_name: 'yaotti', password: 'mysecret' # => contains token
-# or
-qiita = Qiita.new token: 'myauthtoken'
-```
+* [code](https://github.com/kachick/qiita-rb)
+* [wiki](https://github.com/kachick/qiita-rb/wiki)
+* [API](http://kachick.github.com/qiita-rb/yard/frames.html)
+* [issues](https://github.com/kachick/qiita-rb/issues)
+* [CI](http://travis-ci.org/#!/kachick/qiita-rb)
+* [gem](https://rubygems.org/gems/qiita-kachick)
 
-### Get my items
-```ruby
-qiita.user_items
-```
+License
+--------
 
-### Post/Update/Delete an item
-```ruby
-# post
-item = qiita.post_item title: 'Hello', body: 'markdown text', tags: [{ name: 'ruby', versions: %w[1.9.2 1.9.3] }], private: false
+The MIT X11 License  
+See MIT-LICENSE for further details.
 
-# update
-qiita.update_item item.uuid, title: 'modified'
-
-# delete
-qiita.delete_item item.uuid
-```
-
-## Contributing
-
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+This repository is froked from [qiita](https://github.com/yaotti/qiita-rb)
+Thanks!
