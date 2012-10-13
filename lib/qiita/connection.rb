@@ -1,7 +1,7 @@
+require 'json'
 require 'faraday'
 require 'faraday_middleware'
 require_relative '../faraday/response/raise_qiita_error'
-require 'json'
 
 module Qiita
 

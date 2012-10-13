@@ -110,9 +110,10 @@ module Qiita
     }
 
     def search_items(params)
-      params = SearcherOption.parse(params).to_h
-      params.q = params.queries.join(' ') if params.key? :queries
-      http.get "/search", params
+      params = SearcherOption.parse(params)
+      hash = params.to_h
+      hash[:q] = params.queries.join(' ') if params.with_queries?
+      http.get "/search", hash
     end
 
     alias_method :select, :search_items
