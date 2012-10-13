@@ -18,7 +18,8 @@ The Qiita::Client.new do |client|
     is_a Hashie::Mash
 
     The mash.limit do
-      is 150
+      is_a Fixnum
+      ok it >= 1
     end
 
     The mash.remaining do

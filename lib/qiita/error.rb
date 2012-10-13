@@ -1,10 +1,24 @@
 module Qiita
 
   class Error < StandardError; end
-  class BadRequest < Error; end # 400
-  class Unauthorized < Error; end # 401
-  class Forbidden < Error; end    # 403
-  class NotFound < Error; end     # 404
-  class InternalServerError < Error; end # 500
+  class BadRequestError < Error; end
+  class UnauthorizedError < Error; end
+  class ForbiddenError < Error; end
+  class NotFoundError < Error; end
+  class NotAcceptableError < Error; end
+  class UnprocessableEntityError < Error; end
+  class InternalServerError < Error; end
+  class ServiceUnavailableError < Error; end
+
+  ERRORS = {
+    400 => BadRequestError,
+    401 => UnauthorizedError,
+    403 => ForbiddenError,
+    404 => NotFoundError,
+    406 => NotAcceptableError,
+    422 => UnprocessableEntityError,
+    500 => InternalServerError,
+    503 => ServiceUnavailableError
+  }.freeze
 
 end

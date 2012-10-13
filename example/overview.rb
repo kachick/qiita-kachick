@@ -5,6 +5,7 @@ $VERBOSE = true
 require_relative '../lib/qiita'
 
 client = Qiita::Client.new
+p client.following_users 'AnyUser'
 
 client.auth name: 'Username', password: 'Password'
 p client.token

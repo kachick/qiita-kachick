@@ -1,5 +1,5 @@
 module Qiita
 
-  VERSION = '0.0.2.k'.freeze
+  VERSION = 'kachick.0.0.1'.freeze
 
 end

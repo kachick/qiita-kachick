@@ -48,16 +48,32 @@ module Qiita
     alias_method :authenticate, :auth
     alias_method :login, :auth
 
-    # @todo validate params
+    PostOption = OptionalArgument.define {
+      opt :title, condition: String
+      opt :tags, condition: GENERICS(Hash)
+      opt :body, condition: String
+      opt :private, condition: false
+      opt :gist, condition: BOOLEAN?
+      opt :tweet, default: false, condition: BOOLEAN?
+    }
+
     def post_item(params)
-      http.post '/items', params
+      params = PostOption.parse params
+      http.post '/items', params.to_h
     end
 
     alias_method :post, :post_item
 
-    # @todo validate params
+    UpdateOption = OptionalArgument.define {
+      opt :title, condition: String
+      opt :tags, condition: GENERICS(Hash)
+      opt :body, condition: String
+      opt :private, condition: false
+    }
+
     def update_item(uuid, params)
-      http.put "/items/#{uuid}", params
+      params = UpdateOption.parse params
+      http.put "/items/#{uuid}", params.to_h
     end
 
     alias_method :update, :update_item
@@ -74,6 +90,9 @@ module Qiita
       http.get "/items/#{uuid}"
     end
 
+    # @yield [item]
+    # @yieldreturn [self]
+    # @return [Enumerator]
     def foreach(shallow_items)
       return to_enum(__callee__, shallow_items) unless block_given?
 
@@ -84,12 +103,16 @@ module Qiita
     end
 
     SearcherOption = OptionalArgument.define {
-      opt :q, must: true, aliases: [:query], condition: String
+      opt :q, aliases: [:query], condition: String
+      opt :queries, condition: GENERICS(String)
+      conflict :q, :queries
       opt :stocked, default: false, condition: BOOLEAN?
     }
 
     def search_items(params)
-      http.get "/search", SearcherOption.parse(params).to_h
+      params = SearcherOption.parse(params).to_h
+      params.q = params.queries.join(' ') if params.key? :queries
+      http.get "/search", params
     end
 
     alias_method :select, :search_items
@@ -131,6 +154,10 @@ module Qiita
 
     def user(url_name)
       http.get "/users/#{url_name}"
+    end
+
+    def following_users(url_name)
+      http.get "/users/#{url_name}/following_users"
     end
 
     # @endgroup

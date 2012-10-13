@@ -1,3 +1,8 @@
+# qiita - Qiita-API wrapper
+
+# Copyright (c) 2012 Hiroshige Umino
+# Copyright (c) 2012 Kenichi Kamiya
+
 # Supporting v1 API
 # @see http://qiita.com/docs
 module Qiita
