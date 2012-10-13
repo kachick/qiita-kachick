@@ -14,3 +14,4 @@ end
 require_relative 'qiita/version'
 require_relative 'qiita/error'
 require_relative 'qiita/client'
+require_relative 'qiita/singleton_class'

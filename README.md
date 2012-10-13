@@ -15,7 +15,7 @@ See [API-v1 doc](http://qiita.com/docs)
 Usage
 -----
 
-### Overview
+### Classic
 
 Try this
 
@@ -37,6 +37,22 @@ client.foreach items do |article|
   p "title: #{article.title}"
   p "markdown"
   p article.raw_body
+end
+```
+
+### DSL Like
+
+```ruby
+# coding: utf-8
+require 'qiita'
+
+Qiita.client name: 'Username', password: 'Password' do
+  select(queries: ['ruby', 'qiita', 'API']) 
+  foreach user_items do |article|
+    p "title: #{article.title}"
+    p "markdown"
+    p article.raw_body
+  end
 end
 ```
 
