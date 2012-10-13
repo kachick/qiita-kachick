@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: README
+  
+    &mdash; Documentation by YARD 0.8.2.1
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" media="screen" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: README</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><div id='filecontents'><h1>qiita</h1>
+
+<h2>Description</h2>
+
+<p>Ruby wrapper for Qiita API</p>
+
+<h2>Features</h2>
+
+<p>See <a href="http://qiita.com/docs">API-v1 doc</a></p>
+
+<h2>Usage</h2>
+
+<h3>Overview</h3>
+
+<p>Try this</p>
+
+<pre class="code ruby"><code><span class='comment'># coding: utf-8
+</span><span class='id identifier rubyid_require'>require</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>qiita</span><span class='tstring_end'>'</span></span>
+
+<span class='id identifier rubyid_client'>client</span> <span class='op'>=</span> <span class='const'>Qiita</span><span class='op'>::</span><span class='const'>Client</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
+<span class='id identifier rubyid_p'>p</span> <span class='id identifier rubyid_client'>client</span><span class='period'>.</span><span class='id identifier rubyid_following_users'>following_users</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>AnyUser</span><span class='tstring_end'>'</span></span>
+<span class='id identifier rubyid_p'>p</span> <span class='id identifier rubyid_client'>client</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span><span class='lparen'>(</span><span class='label'>queries:</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>ruby</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>qiita</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>API</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='rparen'>)</span>
+
+<span class='id identifier rubyid_client'>client</span><span class='period'>.</span><span class='id identifier rubyid_auth'>auth</span> <span class='label'>name:</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Username</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='label'>password:</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Password</span><span class='tstring_end'>'</span></span>
+<span class='id identifier rubyid_p'>p</span> <span class='id identifier rubyid_client'>client</span><span class='period'>.</span><span class='id identifier rubyid_token'>token</span>
+<span class='id identifier rubyid_p'>p</span> <span class='id identifier rubyid_client'>client</span><span class='period'>.</span><span class='id identifier rubyid_rate_limit'>rate_limit</span>
+<span class='id identifier rubyid_p'>p</span> <span class='id identifier rubyid_items'>items</span> <span class='op'>=</span> <span class='id identifier rubyid_client'>client</span><span class='period'>.</span><span class='id identifier rubyid_user_items'>user_items</span>
+
+<span class='id identifier rubyid_client'>client</span><span class='period'>.</span><span class='id identifier rubyid_foreach'>foreach</span> <span class='id identifier rubyid_items'>items</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_article'>article</span><span class='op'>|</span>
+  <span class='id identifier rubyid_p'>p</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>title: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_article'>article</span><span class='period'>.</span><span class='id identifier rubyid_title'>title</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id identifier rubyid_p'>p</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>markdown</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id identifier rubyid_p'>p</span> <span class='id identifier rubyid_article'>article</span><span class='period'>.</span><span class='id identifier rubyid_raw_body'>raw_body</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<h3>More API</h3>
+
+<p>See code :)</p>
+
+<h2>Requirements</h2>
+
+<ul>
+<li>Ruby - <a href="http://travis-ci.org/#!/kachick/qiita-rb">1.9.2 or later</a></li>
+<li>json</li>
+<li>faraday</li>
+<li>faraday_middleware</li>
+<li><a href="https://github.com/kachick/optionalargument">optionalargument</a></li>
+</ul>
+
+<h2>Install</h2>
+
+<pre class="code bash"><code>$ gem install qiita-kachick
+</code></pre>
+
+<h2>Build Status</h2>
+
+<p><a href="http://travis-ci.org/kachick/qiita-rb"><img src="https://secure.travis-ci.org/kachick/qiita-rb.png" alt="Build Status"></a></p>
+
+<h2>Link</h2>
+
+<ul>
+<li><a href="https://github.com/kachick/qiita-rb">code</a></li>
+<li><a href="https://github.com/kachick/qiita-rb/wiki">wiki</a></li>
+<li><a href="http://kachick.github.com/qiita-rb/yard/frames.html">API</a></li>
+<li><a href="https://github.com/kachick/qiita-rb/issues">issues</a></li>
+<li><a href="http://travis-ci.org/#!/kachick/qiita-rb">CI</a></li>
+<li><a href="https://rubygems.org/gems/qiita-kachick">gem</a></li>
+</ul>
+
+<h2>License</h2>
+
+<p>The MIT X11 License<br>
+See MIT-LICENSE for further details.</p>
+
+<p>This repository is froked from <a href="https://github.com/yaotti/qiita-rb">qiita</a>
+Thanks!</p>
+</div></div>
+
+    <div id="footer">
+  Generated on Sat Oct 13 14:05:00 2012 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.2.1 (ruby-1.9.3).
+</div>
+
+  </body>
+</html>
