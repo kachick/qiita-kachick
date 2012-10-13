@@ -1,5 +1,5 @@
-qiita-kachick
-===============
+qiita
+========
 
 Description
 -----------
@@ -80,5 +80,5 @@ License
 The MIT X11 License  
 See MIT-LICENSE for further details.
 
-This project is froked from [qiita](https://github.com/yaotti/qiita-rb)
+This repository is froked from [qiita](https://github.com/yaotti/qiita-rb)
 Thanks!

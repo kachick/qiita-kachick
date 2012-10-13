@@ -28,4 +28,6 @@ desc
 
   gem.add_development_dependency 'declare', '~> 0.0.5'
   gem.add_development_dependency 'yard', '~> 0.8'
+  gem.add_development_dependency 'rake'
+  gem.add_development_dependency 'bundler'
 end
