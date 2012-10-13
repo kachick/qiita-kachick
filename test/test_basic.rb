@@ -28,5 +28,19 @@ The Qiita::Client.new do |client|
     end
   end
 
+  The client.following_users '_kachick' do
+    is_a Array
+  end
+
+  The client.following_tags '_kachick' do |tags|
+    is_a Array
+
+    The tags.sample do
+      is_a Hashie::Mash
+    end
+
+    ok tags.any?{|tag|tag.url_name == 'Ruby'}
+  end
+
 end
 

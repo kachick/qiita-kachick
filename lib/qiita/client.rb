@@ -157,8 +157,16 @@ module Qiita
       http.get "/users/#{url_name}"
     end
 
+    # @param [String] url_name
+    # @return [Array]
     def following_users(url_name)
       http.get "/users/#{url_name}/following_users"
+    end
+
+    # @param [String] url_name
+    # @return [Array]
+    def following_tags(url_name)
+      http.get "/users/#{url_name}/following_tags"
     end
 
     # @endgroup
