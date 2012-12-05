@@ -63,7 +63,7 @@ See code :)
 Requirements
 -------------
 
-* Ruby - [1.9.2 or later](http://travis-ci.org/#!/kachick/qiita-rb)
+* Ruby - [1.9.2 or later](http://travis-ci.org/#!/kachick/qiita-kachick)
 * json
 * faraday
 * faraday_middleware
@@ -79,16 +79,16 @@ $ gem install qiita-kachick
 Build Status
 -------------
 
-[![Build Status](https://secure.travis-ci.org/kachick/qiita-rb.png)](http://travis-ci.org/kachick/qiita-rb)
+[![Build Status](https://secure.travis-ci.org/kachick/qiita-kachick.png)](http://travis-ci.org/kachick/qiita-kachick)
 
 Link
 ----
 
-* [code](https://github.com/kachick/qiita-rb)
-* [wiki](https://github.com/kachick/qiita-rb/wiki)
-* [API](http://kachick.github.com/qiita-rb/yard/frames.html)
-* [issues](https://github.com/kachick/qiita-rb/issues)
-* [CI](http://travis-ci.org/#!/kachick/qiita-rb)
+* [code](https://github.com/kachick/qiita-kachick)
+* [wiki](https://github.com/kachick/qiita-kachick/wiki)
+* [API](http://kachick.github.com/qiita-kachick/yard/frames.html)
+* [issues](https://github.com/kachick/qiita-kachick/issues)
+* [CI](http://travis-ci.org/#!/kachick/qiita-kachick)
 * [gem](https://rubygems.org/gems/qiita-kachick)
 
 License
