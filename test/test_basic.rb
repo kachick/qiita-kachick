@@ -26,7 +26,7 @@ The Qiita::Client.new do |client|
     end
   end
 
-  The client.following_users '_kachick' do |users|
+  The client.following_users 'kachick@github' do |users|
     is_a Array
 
     The users.sample do
@@ -34,7 +34,7 @@ The Qiita::Client.new do |client|
     end
   end
 
-  The client.following_tags '_kachick' do |tags|
+  The client.following_tags 'kachick@github' do |tags|
     is_a Array
 
     The tags.sample do
