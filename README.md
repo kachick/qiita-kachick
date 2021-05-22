@@ -1,11 +1,14 @@
 qiita
 ========
 
+* ***This repository is archived***
+* ***No longer maintained***
+* ***All versions have been yanked from https://rubygems.org for releasing valuable namespace for others***
+
 Description
 -----------
 
 Ruby wrapper for Qiita API
-
 
 Features
 --------
@@ -69,33 +72,11 @@ Requirements
 * faraday_middleware
 * [optionalargument](https://github.com/kachick/optionalargument)
 
-Install
--------
-
-```bash
-$ gem install qiita-kachick
-```
-
-Build Status
--------------
-
-[![Build Status](https://secure.travis-ci.org/kachick/qiita-kachick.png)](http://travis-ci.org/kachick/qiita-kachick)
-
-Link
-----
-
-* [code](https://github.com/kachick/qiita-kachick)
-* [wiki](https://github.com/kachick/qiita-kachick/wiki)
-* [API](http://kachick.github.com/qiita-kachick/yard/frames.html)
-* [issues](https://github.com/kachick/qiita-kachick/issues)
-* [CI](http://travis-ci.org/#!/kachick/qiita-kachick)
-* [gem](https://rubygems.org/gems/qiita-kachick)
-
 License
 --------
 
 The MIT X11 License  
 See MIT-LICENSE for further details.
 
-This repository is froked from [qiita](https://github.com/yaotti/qiita-rb)
+This repository is forked from [qiita](https://github.com/yaotti/qiita-rb)
 Thanks!
